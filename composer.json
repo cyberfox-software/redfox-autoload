@@ -1,0 +1,42 @@
+{
+  "name": "cyberfox/redfox-autoload",
+  "description": "The autoload component provides a facility to automatic load your classes without include your class files.",
+  "type": "library",
+  "minimum-stability": "dev",
+  "keywords": ["library"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Christian Graf",
+      "email": "christian.graf@cyberfox.at"
+    },
+    {
+      "name": "Cyberfox Software Solutions e.U.",
+      "email": "office@cyberfox.at",
+      "homepage": "http://cyberfox.at"
+    }
+  ],
+  "require": {
+    "php": ">= 7.0.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.3",
+    "pdepend/pdepend" : "@stable",
+    "phploc/phploc": "*",
+    "sebastian/phpcpd": "*",
+    "mayflower/php-codebrowser": "~1.1",
+    "sclable/coding-standards": "*",
+    "phing/phing": "^2.0",
+    "sclable/xml-lint": "^0.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "redfox\\autoload\\": "src/php",
+      "redfox\\autoload\\test\\": "test/php",
+      "redfox\\autoload\\test\\unit\\testData\\": "test/php/unit/_testdata"
+    },
+    "exclude-from-classmap": [
+      "/test/"
+    ]
+  }
+}

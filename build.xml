@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) 2016, Cyberfox Software Solutions e.U.
+-->
+<project name="redfox-autoload" default="dist-zip" basedir=".">
+
+  <!-- ============================================  -->
+  <!-- Settings                                      -->
+  <!-- ============================================  -->
+  <property name="version" value="0.1.0.0" override="true" />
+  <property name="build-file" value="${phing.project.name}.zip" override="true" />
+  <property name="build-dir" value="build" override="true" />
+  <property name="build-tmp" value="${build-dir}/_tmp" />
+  <property name="php-src-dir" value="src/php/" />
+
+  <!-- Use this when the tools are managed by Composer in vendor/bin and npm in node_modules -->
+  <if>
+    <equals arg1="${os.name}" arg2="WINNT" />
+    <then>
+      <property name="pdepend" value="vendor\bin\pdepend"/>
+      <property name="phpcpd"  value="vendor\bin\phpcpd"/>
+      <property name="phpcs"   value="vendor\bin\phpcs"/>
+      <property name="phpcs-fix"   value="vendor\bin\sclfix"/>
+      <property name="phploc"  value="vendor\bin\phploc"/>
+      <property name="phpmd"   value="vendor\bin\phpmd"/>
+      <property name="phpunit" value="vendor\bin\phpunit"/>
+      <property name="phpcb" value="vendor\bin\phpcb"/>
+      <property name="security-checker" value="vendor\bin\security-checker"/>
+      <property name="xmllint"  value="vendor\bin\xmllint"/>
+    </then>
+    <else>
+      <property name="pdepend" value="vendor/bin/pdepend"/>
+      <property name="phpcpd"  value="vendor/bin/phpcpd"/>
+      <property name="phpcs"   value="vendor/bin/phpcs"/>
+      <property name="phpcs-fix"   value="vendor/bin/sclfix"/>
+      <property name="phploc"  value="vendor/bin/phploc"/>
+      <property name="phpmd"   value="vendor/bin/phpmd"/>
+      <property name="phpunit" value="vendor/bin/phpunit"/>
+      <property name="phpcb" value="vendor/bin/phpcb"/>
+      <property name="security-checker" value="vendor/bin/security-checker"/>
+      <property name="xmllint"  value="vendor/bin/xmllint"/>
+    </else>
+  </if>
+
+  <fileset id="srcFiles" defaultexcludes="true" casesensitive="true" expandsymboliclinks="false" dir="src">
+    <include name="**/*" />
+  </fileset>
+
+  <!-- ============================================  -->
+  <!-- Target: copy                                  -->
+  <!-- ============================================  -->
+  <target name="copy" description="Copy source files">
+    <echo msg="copy src files" />
+    <copy todir="${build-tmp}/src" >
+      <fileset refid="srcFiles" />
+    </copy>
+
+    <echo msg="copy package base files"/>
+    <copy todir="${build-tmp}/src">
+      <fileset defaultexcludes="true" casesensitive="true" expandsymboliclinks="true" dir=".">
+        <include name="README.md"/>
+        <include name="bootstrap.inc.php"/>
+        <include name="composer.json"/>
+        <include name="composer.lock"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- ============================================  -->
+  <!-- (DEFAULT)  Target: dist                       -->
+  <!-- ============================================  -->
+  <target name="dist" description="Distribute package." depends="clean, prepare, lint, unittest, phpcs, phpmd, copy">
+    <echo msg="distribute package complete." />
+  </target>
+
+  <!-- ============================================  -->
+  <!-- Target: dist-zip                              -->
+  <!-- ============================================  -->
+  <target name="dist-zip" description="Distribute package and generate zip file." depends="dist">
+    <echo msg="remove existing zip file" />
+    <delete file="${build-dir}/${build-file}" />
+    <echo msg="build zip archive" />
+    <zip destfile="${build-dir}/${build-file}">
+      <fileset dir="${build-tmp}/src">
+        <include name="**/**" />
+      </fileset>
+    </zip>
+  </target>
+
+  <!-- ============================================  -->
+  <!-- clean                                         -->
+  <!-- ============================================  -->
+  <target name="clean">
+    <echo msg="remove existing dist file" />
+    <delete file="${build-dir}/${build-file}" />
+    <echo msg="remove existing build logs" />
+    <delete dir="${build-dir}/coverage"/>
+    <delete dir="${build-dir}/logs"/>
+    <delete dir="${build-dir}/code-browser"/>
+    <delete dir="${build-dir}/phpdoc"/>
+    <delete dir="docs/phpdoc"/>
+    <echo msg="remove build temp" />
+    <delete dir="${build-tmp}"/>
+  </target>
+
+  <!-- ============================================  -->
+  <!-- prepare                                       -->
+  <!-- ============================================  -->
+  <target name="prepare">
+    <echo msg="prepare build dir" />
+    <mkdir dir="${build-dir}/coverage"/>
+    <mkdir dir="${build-dir}/logs"/>
+    <mkdir dir="${build-dir}/code-browser"/>
+    <mkdir dir="${build-tmp}"/>
+  </target>
+
+  <!-- ============================================  -->
+  <!-- CI targets                                    -->
+  <!-- ============================================  -->
+  <target name="lint">
+    <phplint haltonfailure="true">
+      <fileset defaultexcludes="true" casesensitive="true" expandsymboliclinks="false" dir="${php-src-dir}">
+        <include name="**/*.php" />
+      </fileset>
+    </phplint>
+  </target>
+
+  <target name="unittest" description="unit tests">
+    <exec command="${phpunit} --stop-on-failure --testsuite default" checkreturn="true" passthru="true" />
+  </target>
+
+  <target name="phpcs">
+    <exec command="${phpcs} -p --standard=vendor/sclable/coding-standards/src/php/php_coding_standards/SclableStandard/ruleset.xml --ignore=autoload.php ${php-src-dir}" checkreturn="true" passthru="true" />
+  </target>
+
+  <target name="phpcs-fix">
+    <exec command="${phpcs-fix} ${php-src-dir}" checkreturn="true" passthru="true" />
+  </target>
+
+  <target name="phpmd">
+    <exec command="${phpmd} ${php-src-dir} text vendor/sclable/coding-standards/src/php/php_coding_standards/SclableMessDetection/ruleset.xml" checkreturn="true" passthru="true" />
+  </target>
+
+  <target name="pdepend">
+    <exec command="${pdepend} --jdepend-xml=${build-dir}/logs/jdepend.xml --jdepend-chart=${build-dir}/logs/dependencies.svg --overview-pyramid=${build-dir}/logs/overview-pyramid.svg ${php-src-dir}" checkreturn="true" passthru="true" />
+  </target>
+
+  <target name="phploc">
+    <exec command="${phploc} ${php-src-dir}" checkreturn="true" passthru="true" />
+  </target>
+
+  <target name="phpcpd">
+    <exec command="${phpcpd} ${php-src-dir}" checkreturn="false" passthru="true" />
+  </target>
+
+  <target name="phpcb">
+    <exec command="${phpcb} --log ${build-dir}/logs --source ${php-src-dir} --output ${build-dir}/code-browser" checkreturn="true" passthru="true"/>
+  </target>
+
+  <target name="security-checker">
+    <exec command="${security-checker} security:check" checkreturn="true" passthru="true"/>
+  </target>
+
+  <target name="qa" depends="clean,prepare,lint,unittest,phpcs,phpmd,pdepend,phploc,phpcpd,phpcb,security-checker">
+    <echo message="Private build completed." />
+  </target>
+</project>
