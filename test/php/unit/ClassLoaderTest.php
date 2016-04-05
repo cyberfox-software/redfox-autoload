@@ -22,11 +22,16 @@ use redfox\autoload\ClassLoader;
  */
 class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 {
+    protected $className = 'redfox\autoload\ClassLoader';
+
     // SETUP -----------------------------------------------------------------
     // end - SETUP -----------------------------------------------------------
 
     // TESTS ------------------------------------------------------------------
 
+    /**
+     * Test 1
+     */
     public function testInstanceOfClassLoaderInterface()
     {
         $autoloader = new ClassLoader(
@@ -40,10 +45,12 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Test 2
+     */
     public function testConstructorSaveParameters()
     {
-        $className = 'redfox\autoload\ClassLoader';
-        $mock = $this->getMockBuilder($className)
+        $mock = $this->getMockBuilder($this->className)
                     ->disableOriginalConstructor()
                     ->getMock();
 
@@ -51,10 +58,42 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
             ->method('addNamespace')->with('name\space', 'dir/ectory');
 
         // now call the constructor
-        $reflectedClass = new \ReflectionClass($className);
+        $reflectedClass = new \ReflectionClass($this->className);
         $constructor = $reflectedClass->getConstructor();
         $constructor->invoke($mock, 'name\space', 'dir/ectory');
     }
+
+    /**
+     * Test 3
+     */
+    public function testConstructorWithEmptyParameters()
+    {
+        $mock = $this->getMockBuilder($this->className)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->never())
+            ->method('addNamespace');
+
+        // now call the constructor
+        $reflectedClass = new \ReflectionClass($this->className);
+        $constructor = $reflectedClass->getConstructor();
+        $constructor->invoke($mock);
+        $constructor->invoke($mock, 'name\space');
+        $constructor->invoke($mock, null, 'dir/ectory');
+    }
+
+    /**
+     * Test 4
+     */
+    /* public function testAddNamespaceSavingParameters()
+    {
+        $className = 'redfox\autoload\ClassLoader';
+        $mock = $this->getMockBuilder($className)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }*/
+
 
     // end - TESTS ------------------------------------------------------------
 
