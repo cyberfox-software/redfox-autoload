@@ -128,34 +128,36 @@ class ClassLoader implements ClassLoaderInterface
      * @param string $baseDirectory The base directory for the class files within the namespace.
      * @param bool $prepend If true, prepend the base directory to the stack instead of appending it;
      * this causes it to be searched first rather than last.
+     *
      * @return void
      */
     public function addNamespace(string $namespacePrefix, string $baseDirectory, bool $prepend = false)
     {
         //normalize namespace prefix
-        $namespacePrefix = trim($namespacePrefix, self::NAMESPACE_SEPARATOR) . self::NAMESPACE_SEPARATOR;
+        $namespacePrefix = trim(
+                str_replace(['/', '\\'], self::NAMESPACE_SEPARATOR, trim($namespacePrefix)),
+                self::NAMESPACE_SEPARATOR
+            ) . self::NAMESPACE_SEPARATOR;
 
         //normalize the base directory with a trailing separator
         $baseDirectory = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, trim($baseDirectory));
         $baseDirectory = rtrim($baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         //initialize the namespace prefix array
-        if (isset($this->namespaceList[ $namespacePrefix ]) === false)
+        if (isset($this->namespaceList[$namespacePrefix]) === false)
         {
-            $this->namespaceList[ $namespacePrefix ] = [];
+            $this->namespaceList[$namespacePrefix] = [];
         }
 
         //retain the base directory for the namespace prefix
         if ($prepend)
         {
-            array_unshift($this->namespaceList[ $namespacePrefix ], $baseDirectory);
+            array_unshift($this->namespaceList[$namespacePrefix], $baseDirectory);
         }
         else
         {
-            array_push($this->namespaceList[ $namespacePrefix ], $baseDirectory);
+            array_push($this->namespaceList[$namespacePrefix], $baseDirectory);
         }
-
-        return;
     }
 
     // end - MEMBERS ----------------------------------------------------------
@@ -173,13 +175,13 @@ class ClassLoader implements ClassLoaderInterface
     protected function loadMappedFile(string $namespace, string $relativeClass) : string
     {
         //are there any base directories for this namespace prefix?
-        if (isset($this->namespaceList[ $namespace ]) === false)
+        if (isset($this->namespaceList[$namespace]) === false)
         {
             return false;
         }
 
         //look through base directories for this namespace prefix
-        foreach ($this->namespaceList[ $namespace ] as $baseDir)
+        foreach ($this->namespaceList[$namespace] as $baseDir)
         {
             // replace the namespace prefix with the base directory,
             // replace namespace separators with directory separators
