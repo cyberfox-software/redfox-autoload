@@ -10,22 +10,22 @@
  * file that was distributed with this source code.
  */
 
-namespace redfox\autoload\test\unit;
+namespace Redfox\Autoload\Test\Unit;
 
-use redfox\autoload\ClassLoader;
+use Redfox\Autoload\ClassLoader;
 
 /**
  * Class ClassLoaderTest
  *
- * @package redfox\autoload\test\unit
- * @author Christian Graf <christian.graf@cyberfox.at>
+ * @package Redfox\Autoload\Test\Unit
+ * @author Christian Graf <christian.graf@sclable.com>
  */
 class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var string
      */
-    protected $className = 'redfox\autoload\ClassLoader';
+    protected $className = 'Redfox\Autoload\ClassLoader';
 
     /**
      * @var null|ClassLoader|\PHPUnit_Framework_MockObject_MockObject
@@ -56,7 +56,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(
-            'redfox\autoload\ClassLoaderInterface',
+            $this->className,
             $autoloader
         );
     }
