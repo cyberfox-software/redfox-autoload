@@ -33,14 +33,14 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
     protected $mock = null;
 
     // SETUP -----------------------------------------------------------------
-    
+
     public function setUp()
     {
         $this->mock = $this->getMockBuilder($this->className)
             ->disableOriginalConstructor()
             ->getMock();
     }
-    
+
     // end - SETUP -----------------------------------------------------------
 
     // TESTS ------------------------------------------------------------------
@@ -52,7 +52,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $autoloader = new ClassLoader(
             'foo\bar',
-            __DIR__ .DIRECTORY_SEPARATOR .'fooBar'
+            __DIR__ . DIRECTORY_SEPARATOR . 'fooBar'
         );
 
         $this->assertInstanceOf(
@@ -96,8 +96,10 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddNamespace()
     {
-        $namespace = 'a\name\space\\' .str_shuffle('aAbBcCdDefghijklmnOPQ') .'\\';
-        $directory = 'my' .DIRECTORY_SEPARATOR .'directory' .DIRECTORY_SEPARATOR .str_shuffle('sub_directory') .DIRECTORY_SEPARATOR;
+        $namespace = 'a\name\space\\' . str_shuffle('aAbBcCdDefghijklmnOPQ') . '\\';
+        $directory = 'my' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . str_shuffle(
+                'sub_directory'
+            ) . DIRECTORY_SEPARATOR;
         $expected = [
             $namespace => [$directory]
         ];
@@ -122,7 +124,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
     public function testAddNamespaceNormalizeNamespace()
     {
         $namespace = '\a/name\space';
-        $directory = 'directory' .DIRECTORY_SEPARATOR;
+        $directory = 'directory' . DIRECTORY_SEPARATOR;
         $expected = [
             'a\name\space\\' => [
                 $directory
@@ -152,7 +154,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
         $directory = '\my/directory\Test';
         $expected = [
             $namespace => [
-                DIRECTORY_SEPARATOR .'my' .DIRECTORY_SEPARATOR .'directory' .DIRECTORY_SEPARATOR .'Test' .DIRECTORY_SEPARATOR
+                DIRECTORY_SEPARATOR . 'my' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'Test' . DIRECTORY_SEPARATOR
             ]
         ];
 

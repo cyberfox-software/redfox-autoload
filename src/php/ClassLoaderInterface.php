@@ -39,7 +39,7 @@ interface ClassLoaderInterface
      * Loads the class file for a given class name.
      *
      * @param string $className The fully-qualified class name.
-     * @return mixed The mapped file name on success, or boolean false on failure.
+     * @return string|false The mapped file name on success, or boolean false on failure.
      */
-    public function load(string $className) : mixed;
+    public function load(string $className);
 }

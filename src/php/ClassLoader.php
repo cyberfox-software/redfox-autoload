@@ -84,7 +84,7 @@ class ClassLoader implements ClassLoaderInterface
     /**
      * @inheritdoc
      */
-    public function load(string $className) : mixed
+    public function load(string $className)
     {
         $namespace = trim($className);
         if (empty($namespace))
