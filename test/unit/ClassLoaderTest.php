@@ -10,7 +10,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Redfox\Autoload\Test\Unit;
+namespace Redfox\Autoload\UnitTest;
 
 use Redfox\Autoload\ClassLoader;
 
@@ -50,14 +50,14 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testInstanceOfClassLoaderInterface()
     {
-        $autoloader = new ClassLoader(
+        $loader = new ClassLoader(
             'foo\bar',
-            __DIR__ . DIRECTORY_SEPARATOR . 'fooBar'
+            __DIR__ . '/fooBar'
         );
 
         $this->assertInstanceOf(
             $this->className,
-            $autoloader
+            $loader
         );
     }
 
