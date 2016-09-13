@@ -25,8 +25,7 @@
   "autoload": {
     "psr-4": {
       "Redfox\\Autoload\\": "src",
-      "Redfox\\Autoload\\UnitTest\\": "test/unit/",
-      "Redfox\\Autoload\\Test\\Unit\\testData\\": "test/unit/_testdata"
+      "Redfox\\Autoload\\UnitTest\\": "test/unit/"
     },
     "exclude-from-classmap": [
       "/test/"
