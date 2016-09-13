@@ -2,18 +2,19 @@
 <!--
 	Copyright (c) 2016, Cyberfox Software Solutions e.U.
 -->
-<project name="redfox-autoload" default="dist-zip" basedir=".">
+<project name="redfox-autoload" default="qa" basedir=".">
 
   <!-- ============================================  -->
   <!-- Settings                                      -->
   <!-- ============================================  -->
-  <property name="version" value="0.1.0.0" override="true" />
+  <property name="version" value="1.0.0" override="true" />
   <property name="build-file" value="${phing.project.name}.zip" override="true" />
   <property name="build-dir" value="build" override="true" />
   <property name="build-tmp" value="${build-dir}/_tmp" />
   <property name="php-src-dir" value="src/php/" />
+  <property name="test-dir" value="test/" />
 
-  <!-- Use this when the tools are managed by Composer in vendor/bin and npm in node_modules -->
+  <!-- Use this when the tools are managed by Composer in vendor/bin -->
   <if>
     <equals arg1="${os.name}" arg2="WINNT" />
     <then>
@@ -47,49 +48,12 @@
   </fileset>
 
   <!-- ============================================  -->
-  <!-- Target: copy                                  -->
+  <!-- TASKS / TARGETS                               -->
   <!-- ============================================  -->
-  <target name="copy" description="Copy source files">
-    <echo msg="copy src files" />
-    <copy todir="${build-tmp}/src" >
-      <fileset refid="srcFiles" />
-    </copy>
 
-    <echo msg="copy package base files"/>
-    <copy todir="${build-tmp}/src">
-      <fileset defaultexcludes="true" casesensitive="true" expandsymboliclinks="true" dir=".">
-        <include name="README.md"/>
-        <include name="bootstrap.inc.php"/>
-        <include name="composer.json"/>
-        <include name="composer.lock"/>
-      </fileset>
-    </copy>
-  </target>
-
-  <!-- ============================================  -->
-  <!-- (DEFAULT)  Target: dist                       -->
-  <!-- ============================================  -->
-  <target name="dist" description="Distribute package." depends="clean, prepare, lint, unittest, phpcs, phpmd, copy">
-    <echo msg="distribute package complete." />
-  </target>
-
-  <!-- ============================================  -->
-  <!-- Target: dist-zip                              -->
-  <!-- ============================================  -->
-  <target name="dist-zip" description="Distribute package and generate zip file." depends="dist">
-    <echo msg="remove existing zip file" />
-    <delete file="${build-dir}/${build-file}" />
-    <echo msg="build zip archive" />
-    <zip destfile="${build-dir}/${build-file}">
-      <fileset dir="${build-tmp}/src">
-        <include name="**/**" />
-      </fileset>
-    </zip>
-  </target>
-
-  <!-- ============================================  -->
-  <!-- clean                                         -->
-  <!-- ============================================  -->
+  <!-- ~~~ -->
+  <!-- Target: clean -->
+  <!-- ~~~ -->
   <target name="clean">
     <echo msg="remove existing dist file" />
     <delete file="${build-dir}/${build-file}" />
@@ -103,9 +67,9 @@
     <delete dir="${build-tmp}"/>
   </target>
 
-  <!-- ============================================  -->
-  <!-- prepare                                       -->
-  <!-- ============================================  -->
+  <!-- ~~~ -->
+  <!-- Target: prepare -->
+  <!-- ~~~ -->
   <target name="prepare">
     <echo msg="prepare build dir" />
     <mkdir dir="${build-dir}/coverage"/>
@@ -114,53 +78,86 @@
     <mkdir dir="${build-tmp}"/>
   </target>
 
-  <!-- ============================================  -->
-  <!-- CI targets                                    -->
-  <!-- ============================================  -->
+  <!-- ~~~ -->
+  <!-- Target: lint -->
+  <!-- ~~~ -->
   <target name="lint">
     <phplint haltonfailure="true">
       <fileset defaultexcludes="true" casesensitive="true" expandsymboliclinks="false" dir="${php-src-dir}">
         <include name="**/*.php" />
       </fileset>
+      <fileset defaultexcludes="true" casesensitive="true" expandsymboliclinks="false" dir="${test-dir}">
+        <include name="**/*.php" />
+      </fileset>
     </phplint>
   </target>
 
-  <target name="unittest" description="unit tests">
+  <!-- ~~~ -->
+  <!-- Target: unittest -->
+  <!-- ~~~ -->
+  <target name="unittest" description="php unit tests">
     <exec command="${phpunit} --stop-on-failure --testsuite default" checkreturn="true" passthru="true" />
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: phpcs / PHP Code Sniffer -->
+  <!-- ~~~ -->
   <target name="phpcs">
     <exec command="${phpcs} -p --standard=vendor/sclable/coding-standards/src/php/php_coding_standards/SclableStandard/ruleset.xml --ignore=autoload.php ${php-src-dir}" checkreturn="true" passthru="true" />
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: phpcs-fix -->
+  <!-- ~~~ -->
   <target name="phpcs-fix">
     <exec command="${phpcs-fix} ${php-src-dir}" checkreturn="true" passthru="true" />
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: phpmd / PHP Mess Detector -->
+  <!-- ~~~ -->
   <target name="phpmd">
     <exec command="${phpmd} ${php-src-dir} text vendor/sclable/coding-standards/src/php/php_coding_standards/SclableMessDetection/ruleset.xml" checkreturn="true" passthru="true" />
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: pdepend / Dependency Checker -->
+  <!-- ~~~ -->
   <target name="pdepend">
     <exec command="${pdepend} --jdepend-xml=${build-dir}/logs/jdepend.xml --jdepend-chart=${build-dir}/logs/dependencies.svg --overview-pyramid=${build-dir}/logs/overview-pyramid.svg ${php-src-dir}" checkreturn="true" passthru="true" />
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: phploc -->
+  <!-- ~~~ -->
   <target name="phploc">
     <exec command="${phploc} ${php-src-dir}" checkreturn="true" passthru="true" />
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: phpcpd -->
+  <!-- ~~~ -->
   <target name="phpcpd">
     <exec command="${phpcpd} ${php-src-dir}" checkreturn="false" passthru="true" />
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: phpcb -->
+  <!-- ~~~ -->
   <target name="phpcb">
     <exec command="${phpcb} --log ${build-dir}/logs --source ${php-src-dir} --output ${build-dir}/code-browser" checkreturn="true" passthru="true"/>
   </target>
 
+  <!-- ~~~ -->
+  <!-- Target: security-checker -->
+  <!-- ~~~ -->
   <target name="security-checker">
     <exec command="${security-checker} security:check" checkreturn="true" passthru="true"/>
   </target>
 
+    <!-- ~~~ -->
+  <!-- Target: qa -->
+  <!-- ~~~ -->
   <target name="qa" depends="clean,prepare,lint,unittest,phpcs,phpmd,pdepend,phploc,phpcpd,phpcb,security-checker">
     <echo message="Private build completed." />
   </target>
