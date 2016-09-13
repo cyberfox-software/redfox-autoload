@@ -11,7 +11,7 @@
     convertWarningsToExceptions="true"
     processIsolation="false"
     stopOnFailure="false"
-    bootstrap="test/php/unit/bootstrap.php"
+    bootstrap="test/unit/bootstrap.php"
     verbose="false"
 >
   <testsuites>
@@ -22,7 +22,7 @@
 
   <filter>
     <whitelist addUncoveredFilesFromWhitelist="true">
-      <directory suffix=".php">src/php/</directory>
+      <directory suffix=".php">src/</directory>
     </whitelist>
   </filter>
 

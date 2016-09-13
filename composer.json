@@ -3,7 +3,7 @@
   "description": "The autoload component provides a facility to automatic load your classes without include your class files.",
   "type": "library",
   "minimum-stability": "dev",
-  "keywords": ["library"],
+  "keywords": ["red fox", "library", "autoload", "class load"],
   "license": "MIT",
   "authors": [
     {
@@ -17,7 +17,7 @@
     }
   ],
   "require": {
-    "php": ">= 7.0.0"
+    "php": ">= 5.5.9"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.3",
@@ -25,15 +25,14 @@
     "phploc/phploc": "*",
     "sebastian/phpcpd": "*",
     "mayflower/php-codebrowser": "~1.1",
-    "sclable/coding-standards": "*",
     "phing/phing": "^2.0",
     "sclable/xml-lint": "^0.2"
   },
   "autoload": {
     "psr-4": {
-      "redfox\\autoload\\": "src/php",
-      "redfox\\autoload\\test\\": "test/php",
-      "redfox\\autoload\\test\\unit\\testData\\": "test/php/unit/_testdata"
+      "Redfox\\Autoload\\": "src",
+      "Redfox\\Autoload\\Test\\": "test",
+      "Redfox\\Autoload\\Test\\Unit\\testData\\": "test/unit/_testdata"
     },
     "exclude-from-classmap": [
       "/test/"
