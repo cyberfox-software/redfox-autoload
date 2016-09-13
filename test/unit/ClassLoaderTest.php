@@ -18,7 +18,7 @@ use Redfox\Autoload\ClassLoader;
  * Class ClassLoaderTest
  *
  * @package Redfox\Autoload\Test\Unit
- * @author Christian Graf <christian.graf@sclable.com>
+ * @author Christian Graf <christian.graf@cyberfox.at>
  */
 class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 {
