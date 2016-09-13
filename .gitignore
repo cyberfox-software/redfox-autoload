@@ -72,6 +72,7 @@ atlassian-ide-plugin.xml
 
 # Composer
 composer.phar
+composer.lock
 /vendor
 
 # Node.js Package Manager
@@ -79,6 +80,5 @@ composer.phar
 
 # Cyberfox - not used for development or run productive / not necessary to save in version control
 /build
-/dist
-/docs/phpdoc/
+
 
