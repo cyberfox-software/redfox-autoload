@@ -20,13 +20,7 @@
     "php": ">= 5.5.9"
   },
   "require-dev": {
-    "phpunit/phpunit": "^5.3",
-    "pdepend/pdepend" : "@stable",
-    "phploc/phploc": "*",
-    "sebastian/phpcpd": "*",
-    "mayflower/php-codebrowser": "~1.1",
-    "phing/phing": "^2.0",
-    "sclable/xml-lint": "^0.2"
+    "phpunit/phpunit": "^4.8|^5.5"
   },
   "autoload": {
     "psr-4": {
