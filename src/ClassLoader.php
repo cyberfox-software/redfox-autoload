@@ -46,18 +46,18 @@ class ClassLoader implements ClassLoaderInterface
     /**
      * ClassLoader constructor.
      *
-     * @param string|null $namespacePrefix
+     * @param string|null $namespace
      * @param string|null $baseDirectory
      * @param bool $prepend
      */
     public function __construct(
-        string $namespacePrefix = null,
-        string $baseDirectory = null,
-        bool $prepend = false
+        $namespace = null,
+        $baseDirectory = null,
+        $prepend = false
     ) {
-        if (!empty($namespacePrefix) && !empty($baseDirectory))
+        if (!empty($namespace) && !empty($baseDirectory))
         {
-            $this->addNamespace($namespacePrefix, $baseDirectory, $prepend);
+            $this->addNamespace($namespace, $baseDirectory, $prepend);
         }
     }
 
@@ -86,7 +86,6 @@ class ClassLoader implements ClassLoaderInterface
      */
     public function load($className)
     {
-        $namespace = trim($className);
         if (empty($namespace))
         {
             return false;
@@ -122,20 +121,20 @@ class ClassLoader implements ClassLoaderInterface
     // MEMBERS ----------------------------------------------------------------
 
     /**
-     * Adds a base directory for a namespace prefix.
+     * Adds a base directory for a namespace.
      *
-     * @param string $namespacePrefix The namespace prefix.
+     * @param string $namespace The namespace prefix.
      * @param string $baseDirectory The base directory for the class files within the namespace.
      * @param bool $prepend If true, prepend the base directory to the stack instead of appending it;
      * this causes it to be searched first rather than last.
      *
      * @return void
      */
-    public function addNamespace(string $namespacePrefix, string $baseDirectory, bool $prepend = false)
+    public function addNamespace($namespace, $baseDirectory, $prepend = false)
     {
         // normalize namespace prefix
-        $namespacePrefix = trim(
-                str_replace(['/', '\\'], self::NAMESPACE_SEPARATOR, trim($namespacePrefix)),
+        $namespace = trim(
+                str_replace(['/', '\\'], self::NAMESPACE_SEPARATOR, trim($namespace)),
                 self::NAMESPACE_SEPARATOR
             ) . self::NAMESPACE_SEPARATOR;
 
@@ -144,19 +143,19 @@ class ClassLoader implements ClassLoaderInterface
         $baseDirectory = rtrim($baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         // initialize the namespace prefix array
-        if (isset($this->namespaceList[$namespacePrefix]) === false)
+        if (isset($this->namespaceList[$namespace]) === false)
         {
-            $this->namespaceList[$namespacePrefix] = [];
+            $this->namespaceList[$namespace] = [];
         }
 
         // retain the base directory for the namespace prefix
         if ($prepend)
         {
-            array_unshift($this->namespaceList[$namespacePrefix], $baseDirectory);
+            array_unshift($this->namespaceList[$namespace], $baseDirectory);
         }
         else
         {
-            array_push($this->namespaceList[$namespacePrefix], $baseDirectory);
+            array_push($this->namespaceList[$namespace], $baseDirectory);
         }
     }
 
